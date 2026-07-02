@@ -93,6 +93,19 @@
 
   .print-actions { text-align: center; margin-top: 16px; }
 
+  /* ===== 印刷向きガイド ===== */
+  .print-guide {
+    background: #fffbea; border: 1px solid #f0d060; border-radius: 8px;
+    padding: 14px 16px; margin-top: 16px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .print-guide .guide-text { flex: 1; }
+  .print-guide h3 { font-size: 0.9rem; color: #8a6d00; margin-bottom: 8px; }
+  .print-guide ul { margin-left: 1.2em; font-size: 0.85rem; line-height: 1.7; color: #555; }
+  .print-guide ul b { color: #c0392b; }
+  .print-guide .guide-figure { flex: 0 0 150px; text-align: center; }
+  .print-guide .guide-figure svg { width: 150px; height: auto; }
+
   /* ===== テンプレート ===== */
   .template-section { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 16px; }
   .template-section h2 { font-size: 1rem; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #e67e22; color: #2c3e50; }
@@ -219,6 +232,49 @@
           </div>
         </div>
         <div class="label-grid" id="labelGrid"></div>
+
+        <!-- 用紙セット向きガイド -->
+        <div class="print-guide">
+          <div class="guide-text">
+            <h3>🖨 ラベル用紙のセット方法（FUJIFILM Apeos C3571）</h3>
+            <ul>
+              <li>用紙の<b>上側（1〜3番ラベルがある側）を、プリンターに対して下向き</b>（差し込む方向）にして入れる</li>
+              <li>ラベル面（印刷面）は<b>上向き</b>にセットする</li>
+            </ul>
+          </div>
+          <div class="guide-figure">
+            <svg viewBox="0 0 150 190" xmlns="http://www.w3.org/2000/svg">
+              <!-- ラベル用紙 -->
+              <rect x="45" y="10" width="60" height="84" fill="#fff" stroke="#999" stroke-width="1.5" rx="2"/>
+              <!-- ラベル枠（3列×4行の簡略表示） -->
+              <g stroke="#ccc" stroke-width="0.8" fill="none">
+                <line x1="65" y1="14" x2="65" y2="90"/>
+                <line x1="85" y1="14" x2="85" y2="90"/>
+                <line x1="49" y1="31" x2="101" y2="31"/>
+                <line x1="49" y1="52" x2="101" y2="52"/>
+                <line x1="49" y1="73" x2="101" y2="73"/>
+              </g>
+              <!-- 1〜3番の番号（下端＝差し込み側が用紙の上側） -->
+              <text x="57" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">1</text>
+              <text x="75" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">2</text>
+              <text x="93" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">3</text>
+              <!-- ラベル面上向きの注記 -->
+              <text x="12" y="45" font-size="8" fill="#555">ラベル面</text>
+              <text x="12" y="55" font-size="8" fill="#c0392b" font-weight="bold">上向き</text>
+              <!-- 「用紙の上側」ラベル -->
+              <text x="110" y="92" font-size="8" fill="#c0392b" font-weight="bold">上側</text>
+              <!-- 矢印（下向きに差し込む） -->
+              <path d="M75 98 L75 118" stroke="#c0392b" stroke-width="2.5" fill="none"/>
+              <path d="M69 112 L75 120 L81 112" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- プリンター -->
+              <rect x="25" y="128" width="100" height="44" fill="#546e7a" rx="5"/>
+              <rect x="40" y="124" width="70" height="6" fill="#37474f" rx="3"/>
+              <text x="75" y="154" font-size="10" fill="#fff" text-anchor="middle">プリンター</text>
+              <text x="75" y="166" font-size="7" fill="#cfd8dc" text-anchor="middle">Apeos C3571</text>
+            </svg>
+          </div>
+        </div>
+
         <div class="print-actions">
           <button class="btn btn-print" onclick="printLabels()">印刷</button>
         </div>
