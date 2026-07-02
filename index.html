@@ -105,11 +105,6 @@
   .print-guide ul b { color: #c0392b; }
   .print-guide .guide-figure { flex: 0 0 150px; text-align: center; }
   .print-guide .guide-figure svg { width: 150px; height: auto; }
-  .print-adjust { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e0cc80; font-size: 0.8rem; color: #555; }
-  .print-adjust .adjust-title { font-weight: bold; color: #8a6d00; white-space: nowrap; }
-  .print-adjust .adjust-item { white-space: nowrap; margin-right: 8px; }
-  .print-adjust input { width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-family: inherit; }
-  .print-adjust .adjust-hint { color: #999; margin-left: 4px; }
 
   /* ===== テンプレート ===== */
   .template-section { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 16px; }
@@ -250,11 +245,6 @@
               <li>ラベル面（印刷面）は<b>上向き</b>にセットする</li>
               <li>印刷ダイアログでは倍率<b>「100%（実際のサイズ）」</b>・余白<b>「なし」</b>を選択する（「用紙に合わせる」は位置ずれの原因になります）</li>
             </ul>
-            <div class="print-adjust">
-              <span class="adjust-title">印刷位置の微調整（mm）：</span>
-              <span class="adjust-item"><label>上下 <input type="number" id="offsetY" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で下へ</span></span>
-              <span class="adjust-item"><label>左右 <input type="number" id="offsetX" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で右へ</span></span>
-            </div>
           </div>
           <div class="guide-figure">
             <svg viewBox="0 0 150 190" xmlns="http://www.w3.org/2000/svg">
@@ -429,15 +419,13 @@
     const sheet = document.getElementById('printSheet');
     sheet.innerHTML = '';
 
-    const offset = getPrintOffsets();
-
     selectedCells.forEach(index => {
       const row = Math.floor(index / LAYOUT.cols);
       const col = index % LAYOUT.cols;
 
       // 用紙上の本来のラベル位置
-      const physLeft = LAYOUT.marginLeft + col * (LAYOUT.labelW + LAYOUT.gapX) + offset.x;
-      const physTop = LAYOUT.marginTop + row * (LAYOUT.labelH + LAYOUT.gapY) + offset.y;
+      const physLeft = LAYOUT.marginLeft + col * (LAYOUT.labelW + LAYOUT.gapX);
+      const physTop = LAYOUT.marginTop + row * (LAYOUT.labelH + LAYOUT.gapY);
 
       // 給紙向き（上側を下向き・ラベル面上向き）に合わせ、ページ上では点対称の位置に配置。
       // ラベル自体はCSSで180°回転しているため、用紙上では正しい向き・位置に印刷される
@@ -475,28 +463,6 @@
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
-  }
-
-  // ===== 印刷位置の微調整 =====
-  const OFFSET_KEY = 'label_print_offset';
-
-  function getPrintOffsets() {
-    return {
-      x: parseFloat(document.getElementById('offsetX').value) || 0,
-      y: parseFloat(document.getElementById('offsetY').value) || 0
-    };
-  }
-
-  function saveOffsets() {
-    localStorage.setItem(OFFSET_KEY, JSON.stringify(getPrintOffsets()));
-  }
-
-  function loadOffsets() {
-    try {
-      const o = JSON.parse(localStorage.getItem(OFFSET_KEY) || '{}');
-      if (o.x) document.getElementById('offsetX').value = o.x;
-      if (o.y) document.getElementById('offsetY').value = o.y;
-    } catch {}
   }
 
   // ===== テンプレート管理 =====
@@ -580,7 +546,6 @@
   // ===== 初期化 =====
   initGrid();
   renderTemplates();
-  loadOffsets();
 </script>
 </body>
 </html>
