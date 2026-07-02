@@ -105,6 +105,10 @@
   .print-guide ul b { color: #c0392b; }
   .print-guide .guide-figure { flex: 0 0 150px; text-align: center; }
   .print-guide .guide-figure svg { width: 150px; height: auto; }
+  .print-adjust { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e0cc80; font-size: 0.8rem; color: #555; }
+  .print-adjust .adjust-title { font-weight: bold; color: #8a6d00; }
+  .print-adjust input { width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-family: inherit; }
+  .print-adjust .adjust-hint { color: #999; margin-right: 8px; }
 
   /* ===== テンプレート ===== */
   .template-section { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 16px; }
@@ -138,8 +142,6 @@
       height: 297mm;
       position: relative;
       page-break-after: always;
-      /* Apeos C3571の給紙向き（上側を下向き・ラベル面上向き）に合わせて180°回転して出力する */
-      transform: rotate(180deg);
     }
     .print-label {
       position: absolute;
@@ -152,6 +154,9 @@
       padding: 1.5mm 3mm;
       font-size: 9pt;
       line-height: 1.4;
+      /* Apeos C3571の給紙向き（上側を下向き・ラベル面上向き）に合わせて、
+         各ラベルを180°回転＋点対称の位置に配置して出力する（配置はprintLabels()側） */
+      transform: rotate(180deg);
     }
     .print-label .p-zip { font-size: 7pt; }
     .print-label .p-addr { font-size: 7pt; }
@@ -242,7 +247,13 @@
             <ul>
               <li>用紙の<b>上側（1〜3番ラベルがある側）を、プリンターに対して下向き</b>（差し込む方向）にして入れる</li>
               <li>ラベル面（印刷面）は<b>上向き</b>にセットする</li>
+              <li>印刷ダイアログでは倍率<b>「100%（実際のサイズ）」</b>・余白<b>「なし」</b>を選択する（「用紙に合わせる」は位置ずれの原因になります）</li>
             </ul>
+            <div class="print-adjust">
+              <span class="adjust-title">印刷位置の微調整（mm）：</span>
+              <label>上下 <input type="number" id="offsetY" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で下へ</span>
+              <label>左右 <input type="number" id="offsetX" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で右へ</span>
+            </div>
           </div>
           <div class="guide-figure">
             <svg viewBox="0 0 150 190" xmlns="http://www.w3.org/2000/svg">
@@ -417,12 +428,20 @@
     const sheet = document.getElementById('printSheet');
     sheet.innerHTML = '';
 
+    const offset = getPrintOffsets();
+
     selectedCells.forEach(index => {
       const row = Math.floor(index / LAYOUT.cols);
       const col = index % LAYOUT.cols;
 
-      const left = LAYOUT.marginLeft + col * (LAYOUT.labelW + LAYOUT.gapX);
-      const top = LAYOUT.marginTop + row * (LAYOUT.labelH + LAYOUT.gapY);
+      // 用紙上の本来のラベル位置
+      const physLeft = LAYOUT.marginLeft + col * (LAYOUT.labelW + LAYOUT.gapX) + offset.x;
+      const physTop = LAYOUT.marginTop + row * (LAYOUT.labelH + LAYOUT.gapY) + offset.y;
+
+      // 給紙向き（上側を下向き・ラベル面上向き）に合わせ、ページ上では点対称の位置に配置。
+      // ラベル自体はCSSで180°回転しているため、用紙上では正しい向き・位置に印刷される
+      const left = 210 - physLeft - LAYOUT.labelW;
+      const top = 297 - physTop - LAYOUT.labelH;
 
       const label = document.createElement('div');
       label.className = 'print-label';
@@ -455,6 +474,28 @@
     const d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+  }
+
+  // ===== 印刷位置の微調整 =====
+  const OFFSET_KEY = 'label_print_offset';
+
+  function getPrintOffsets() {
+    return {
+      x: parseFloat(document.getElementById('offsetX').value) || 0,
+      y: parseFloat(document.getElementById('offsetY').value) || 0
+    };
+  }
+
+  function saveOffsets() {
+    localStorage.setItem(OFFSET_KEY, JSON.stringify(getPrintOffsets()));
+  }
+
+  function loadOffsets() {
+    try {
+      const o = JSON.parse(localStorage.getItem(OFFSET_KEY) || '{}');
+      if (o.x) document.getElementById('offsetX').value = o.x;
+      if (o.y) document.getElementById('offsetY').value = o.y;
+    } catch {}
   }
 
   // ===== テンプレート管理 =====
@@ -538,6 +579,7 @@
   // ===== 初期化 =====
   initGrid();
   renderTemplates();
+  loadOffsets();
 </script>
 </body>
 </html>
