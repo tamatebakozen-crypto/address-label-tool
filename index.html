@@ -138,6 +138,8 @@
       height: 297mm;
       position: relative;
       page-break-after: always;
+      /* Apeos C3571の給紙向き（上側を下向き・ラベル面上向き）に合わせて180°回転して出力する */
+      transform: rotate(180deg);
     }
     .print-label {
       position: absolute;
