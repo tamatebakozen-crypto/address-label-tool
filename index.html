@@ -106,9 +106,10 @@
   .print-guide .guide-figure { flex: 0 0 150px; text-align: center; }
   .print-guide .guide-figure svg { width: 150px; height: auto; }
   .print-adjust { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e0cc80; font-size: 0.8rem; color: #555; }
-  .print-adjust .adjust-title { font-weight: bold; color: #8a6d00; }
+  .print-adjust .adjust-title { font-weight: bold; color: #8a6d00; white-space: nowrap; }
+  .print-adjust .adjust-item { white-space: nowrap; margin-right: 8px; }
   .print-adjust input { width: 60px; padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-family: inherit; }
-  .print-adjust .adjust-hint { color: #999; margin-right: 8px; }
+  .print-adjust .adjust-hint { color: #999; margin-left: 4px; }
 
   /* ===== テンプレート ===== */
   .template-section { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); margin-bottom: 16px; }
@@ -245,14 +246,14 @@
           <div class="guide-text">
             <h3>🖨 ラベル用紙のセット方法（FUJIFILM Apeos C3571）</h3>
             <ul>
-              <li>用紙の<b>上側（1〜3番ラベルがある側）を、プリンターに対して下向き</b>（差し込む方向）にして入れる</li>
+              <li>用紙の<b>上側（1〜3番ラベルがある側）を、プリンターと反対側（手前）</b>にして入れる</li>
               <li>ラベル面（印刷面）は<b>上向き</b>にセットする</li>
               <li>印刷ダイアログでは倍率<b>「100%（実際のサイズ）」</b>・余白<b>「なし」</b>を選択する（「用紙に合わせる」は位置ずれの原因になります）</li>
             </ul>
             <div class="print-adjust">
               <span class="adjust-title">印刷位置の微調整（mm）：</span>
-              <label>上下 <input type="number" id="offsetY" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で下へ</span>
-              <label>左右 <input type="number" id="offsetX" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で右へ</span>
+              <span class="adjust-item"><label>上下 <input type="number" id="offsetY" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で下へ</span></span>
+              <span class="adjust-item"><label>左右 <input type="number" id="offsetX" value="0" step="0.5" onchange="saveOffsets()"></label><span class="adjust-hint">＋で右へ</span></span>
             </div>
           </div>
           <div class="guide-figure">
@@ -267,15 +268,15 @@
                 <line x1="49" y1="52" x2="101" y2="52"/>
                 <line x1="49" y1="73" x2="101" y2="73"/>
               </g>
-              <!-- 1〜3番の番号（下端＝差し込み側が用紙の上側） -->
-              <text x="57" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">1</text>
-              <text x="75" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">2</text>
-              <text x="93" y="86" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">3</text>
+              <!-- 1〜3番の番号（用紙の上側＝プリンターと反対側） -->
+              <text x="57" y="26" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">1</text>
+              <text x="75" y="26" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">2</text>
+              <text x="93" y="26" font-size="7" fill="#e67e22" text-anchor="middle" font-weight="bold">3</text>
               <!-- ラベル面上向きの注記 -->
               <text x="12" y="45" font-size="8" fill="#555">ラベル面</text>
               <text x="12" y="55" font-size="8" fill="#c0392b" font-weight="bold">上向き</text>
-              <!-- 「用紙の上側」ラベル -->
-              <text x="110" y="92" font-size="8" fill="#c0392b" font-weight="bold">上側</text>
+              <!-- 「用紙の上側」ラベル（プリンターと反対側） -->
+              <text x="110" y="20" font-size="8" fill="#c0392b" font-weight="bold">上側</text>
               <!-- 矢印（下向きに差し込む） -->
               <path d="M75 98 L75 118" stroke="#c0392b" stroke-width="2.5" fill="none"/>
               <path d="M69 112 L75 120 L81 112" stroke="#c0392b" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
